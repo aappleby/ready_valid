@@ -1,87 +1,104 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company:
-// Engineer:
-//
-// Create Date: 11/30/2023 10:38:09 PM
-// Design Name:
-// Module Name: pipeline
-// Project Name:
-// Target Devices:
-// Tool Versions:
-// Description:
-//
-// Dependencies:
-//
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-//
-//////////////////////////////////////////////////////////////////////////////////
 
+/*
+us_valid ds_ready empty done
+
+0 0 0 0 - keep working
+0 1 0 0 - keep working
+1 0 0 0 - keep working
+1 1 0 0 - keep working
+
+0 1 1 0 - hold because empty and no input
+0 0 1 0 - hold because empty and no input
+1 0 1 0 - move in to data
+1 1 1 0 - move in to data
+
+0 0 0 1 - hold because out not ready
+1 0 0 1 - hold because out not ready
+0 1 0 1 - move data to out
+1 1 0 1 - move data to out, move in to data
+
+0 0 1 1 - can't be both empty and done
+0 1 1 1 - can't be both empty and done
+1 0 1 1 - can't be both empty and done
+1 1 1 1 - can't be both empty and done
+*/
+
+//------------------------------------------------------------------------------
 
 module pipeline
-#(
-  parameter constant = 32'h84573215
-)
+#(parameter seed = 32'h00001234)
 (
   input  logic       clock,
   input  logic       reset,
 
-  input  logic[15:0] data,
-  input  logic       data_valid,
-  output logic       data_ready,
+  input  logic[15:0] us_data,
+  input  logic       us_valid,
+  output logic       us_ready,
 
-  output logic[15:0] result,
-  output logic       result_valid,
-  input  logic       result_ready
+  output logic[15:0] ds_data,
+  output logic       ds_valid,
+  input  logic       ds_ready
 );
 
+  //----------------------------------------
+
+  function automatic logic[31:0] scramble(logic[31:0] x);
+    x ^= seed;
+    x ^= x >> 16;
+    x *= 32'h85ebca6b;
+    x ^= x >> 13;
+    x *= 32'hc2b2ae35;
+    x ^= x >> 16;
+    scramble = x;
+  endfunction
+
+  logic[15:0] scrambled;
+  assign scrambled = scramble(temp);
+
+  //----------------------------------------
+
   logic[15:0] temp;
+  logic       empty;
+
   logic[15:0] temp_next;
-  logic      done;
+  logic       empty_next;
 
-  initial begin
-    temp = 8'b0;
-    data_ready = 0;
-    result = 0;
-    result_valid = 0;
+  always @* begin
+    logic done;
+    logic ds_move;
+    logic us_move;
+    done = temp < 16'h2000;
+
+    ds_move    = !empty && done && ds_ready;
+    us_move    = empty || ds_move;
+
+    us_ready   = us_move;
+    empty_next = us_move && !us_valid;
+    ds_valid   = !empty && done;
+    ds_data    = ds_valid ? temp : 16'hXXXX;
+
+    if      (!empty && !done)      temp_next = scrambled;
+    else if (us_ready && us_valid) temp_next = us_data;
+    else                           temp_next = temp;
+
+
   end
 
-  always_comb begin
-    logic[31:0] m;
-
-    m = temp;
-    m ^= m >> 9;
-    m ^= m << 7;
-    m += 16'h1431;
-    m ^= 16'h4237;
-
-    temp_next = m;
-    done = (temp_next[1:0] == 0);
-
-  end
+  //----------------------------------------
 
   always @(posedge clock) begin
     if (reset) begin
-      temp <= 0;
+      temp  <= 16'hXXXX;
+      empty <= 1;
     end else begin
-      result_valid <= 0;
-      data_ready <= 0;
-
-      if (done && data_valid && result_ready) begin
-
-        temp         <= data;
-        data_ready   <= 1;
-
-        result       <= temp;
-        result_valid <= 1;
-
-      end else begin
-        if (!done) temp <= temp_next;
-      end
+      temp  <= temp_next;
+      empty <= empty_next;
     end
   end
 
+  //----------------------------------------
 
 endmodule
+
+//------------------------------------------------------------------------------

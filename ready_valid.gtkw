@@ -1,0 +1,45 @@
+[*]
+[*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
+[*] Mon Dec  4 00:44:08 2023
+[*]
+[dumpfile] "/home/aappleby/ready_valid/pinwheel.vcd"
+[dumpfile_mtime] "Mon Dec  4 00:43:43 2023"
+[dumpfile_size] 7671
+[savefile] "/home/aappleby/ready_valid/ready_valid.gtkw"
+[timestart] 0
+[size] 3135 985
+[pos] -1 -1
+*-15.796969 590500 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] testbench.
+[sst_width] 278
+[signals_width] 249
+[sst_expanded] 1
+[sst_vpaned_height] 127
+@28
+testbench.my_pipeline.clock
+testbench.my_pipeline.reset
+@200
+-
+@22
+testbench.my_pipeline.us_data[15:0]
+@28
+testbench.my_pipeline.us_valid
+testbench.my_pipeline.us_ready
+@200
+-
+@22
+testbench.my_pipeline.temp[15:0]
+testbench.my_pipeline.temp_next[15:0]
+testbench.my_pipeline.scrambled[15:0]
+@28
+testbench.my_pipeline.empty
+testbench.my_pipeline.empty_next
+@200
+-
+@22
+testbench.my_pipeline.ds_data[15:0]
+@28
+testbench.my_pipeline.ds_valid
+testbench.my_pipeline.ds_ready
+[pattern_trace] 1
+[pattern_trace] 0
