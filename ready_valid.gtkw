@@ -1,20 +1,20 @@
 [*]
 [*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
-[*] Mon Dec  4 00:44:08 2023
+[*] Mon Dec  4 06:15:48 2023
 [*]
 [dumpfile] "/home/aappleby/ready_valid/pinwheel.vcd"
-[dumpfile_mtime] "Mon Dec  4 00:43:43 2023"
-[dumpfile_size] 7671
+[dumpfile_mtime] "Mon Dec  4 06:14:45 2023"
+[dumpfile_size] 10891
 [savefile] "/home/aappleby/ready_valid/ready_valid.gtkw"
-[timestart] 0
-[size] 3135 985
+[timestart] 474600
+[size] 2560 1361
 [pos] -1 -1
-*-15.796969 590500 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-14.660418 658500 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] testbench.
 [sst_width] 278
 [signals_width] 249
 [sst_expanded] 1
-[sst_vpaned_height] 127
+[sst_vpaned_height] 185
 @28
 testbench.my_pipeline.clock
 testbench.my_pipeline.reset
@@ -28,12 +28,13 @@ testbench.my_pipeline.us_ready
 @200
 -
 @22
-testbench.my_pipeline.temp[15:0]
-testbench.my_pipeline.temp_next[15:0]
-testbench.my_pipeline.scrambled[15:0]
+testbench.my_pipeline.work[15:0]
 @28
 testbench.my_pipeline.empty
-testbench.my_pipeline.empty_next
+@22
+testbench.my_pipeline.work_next[15:0]
+@28
+testbench.my_pipeline.work_done
 @200
 -
 @22
@@ -41,5 +42,7 @@ testbench.my_pipeline.ds_data[15:0]
 @28
 testbench.my_pipeline.ds_valid
 testbench.my_pipeline.ds_ready
+@22
+testbench.ds_out[15:0]
 [pattern_trace] 1
 [pattern_trace] 0

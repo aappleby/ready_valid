@@ -44,6 +44,7 @@ module testbench();
   logic[15:0] ds_data;
   logic       ds_valid;
   logic       ds_ready;
+  logic[15:0] ds_out;
 
   //----------------------------------------
 
@@ -59,112 +60,33 @@ module testbench();
   );
 
   logic[15:0] counter;
+  initial counter = 0;
+  always @(posedge clock) counter <= counter + 1;
 
-  always @* begin
-    logic[31:0] scrambled;
-    scrambled = scramble(counter);
+  logic[31:0] scrambled;
+  assign scrambled = scramble(counter);
+
+  always_comb begin
+    us_valid = scrambled[1];
+    us_data  = (scrambled[1] && us_ready) ? counter : 16'hXXXX;
     ds_ready = scrambled[0];
+    ds_out   = (ds_valid && scrambled[0]) ? ds_data : 16'hXXXX;
   end
 
   always @(posedge clock) begin
-    if (reset) begin
-      counter <= 16'h7890;
-      us_data <= 16'hXXXX;
-      us_valid <= 0;
-    end else begin
-      if (us_valid && us_ready) begin
-        us_data <= 16'hXXXX;
-        us_valid <= 0;
-      end
-      if (!us_valid && (counter[2:0] == 0)) begin
-        us_data <= counter;
-        us_valid <= 1;
-      end
-      counter <= counter + 1;
-    end
   end
 
   initial begin
+    int i;
+
     $dumpfile("pinwheel.vcd");
     $dumpvars(0, testbench);
     $display("================================================================================");
     $display("Hello World");
 
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-    @(posedge clock);
-
+    for (i = 0; i < 200; i++) begin
+      @(posedge clock);
+    end
 
     $display("Done");
     $display("================================================================================");
